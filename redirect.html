@@ -12,16 +12,9 @@
         console.log("Redirect 페이지 실행됨");
 
         function getBlogUrl() {
-            // 1️⃣ URL 파라미터에서 `blog_url` 값 가져오기
             const urlParams = new URLSearchParams(window.location.search);
             let blogUrl = urlParams.get("blog_url");
 
-            // 2️⃣ URL 파라미터가 없으면 `document.referrer` 사용하여 블로그 URL 자동 감지
-            if (!blogUrl || blogUrl === "null") {
-                blogUrl = document.referrer;
-            }
-
-            // 3️⃣ 여전히 `blog_url`이 없으면 "Direct Visit" 처리
             if (!blogUrl || blogUrl === "null") {
                 console.error("블로그 URL을 가져오지 못함. Direct Visit로 설정.");
                 blogUrl = "Direct Visit";
@@ -35,7 +28,7 @@
             let blogUrl = getBlogUrl();
 
             if (blogUrl !== "Direct Visit" && blogUrl.includes("blog.naver.com")) {
-                const sheetUrl = "https://script.google.com/macros/s/AKfycbyP4u2E-NQuY7Q9eKWpViLcQHxCo0RcBsFci0p_9r583LsBFiOywfVyEfN74rJ4BtM/exec";
+                const sheetUrl = "https://script.google.com/macros/s/AKfycbyP4u2E-NQuY7Q9eKWpViLcQHxCo0RcBsFci0p_9r583LsBFiOywfVyEfN74rJ4BtM/exec"; // Google Apps Script URL
                 const sendData = {
                     blogUrl: blogUrl,
                     timestamp: new Date().toISOString()
@@ -55,9 +48,12 @@
                 // 1초 후 홈페이지 이동
                 setTimeout(() => {
                     window.location.replace("https://www.orozi.kr");
-                }, 500);
+                }, 1000);
             } else {
                 console.warn("블로그 URL이 감지되지 않음.");
+                setTimeout(() => {
+                    window.location.replace("https://www.orozi.kr");
+                }, 1000);
             }
         }
 
