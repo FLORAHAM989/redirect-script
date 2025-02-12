@@ -5,41 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redirecting...</title>
     <script>
-        window.onload = function() {
-            // 🔹 URL에서 blog_url 매개변수 가져오기
-            const urlParams = new URLSearchParams(window.location.search);
-            let referrer = urlParams.get("blog_url") || "Direct Visit";
+        console.log("Redirect 페이지 실행됨");
 
-            // 🔹 블로그 URL 감지
-            if (referrer.includes("blog.naver.com")) {
-                console.log("블로그 글 URL 감지됨:", referrer);
-            } else {
-                console.log("블로그 글 URL 감지 실패, referrer:", referrer);
-            }
+        function fetchLatestBlogUrl() {
+            const apiUrl = "https://script.google.com/macros/s/AKfycbyP4u2E-NQuY7Q9eKWpViLcQHxCo0RcBsFci0p_9r583LsBFiOywfVyEfN74rJ4BtM/exec"; // Google Apps Script URL
 
-            // 🔹 Google Sheets에 데이터 저장 (Google Apps Script 활용)
-            const sheetUrl = "https://script.google.com/macros/s/AKfycby8Rt7Muey6LA_BFTGAHwttzI2UhLTzatO0TeSzysPqGY_i8qYG7CnDHGhwY9caukLu/exec"; // Google Apps Script URL
-            const data = {
-                blogUrl: referrer,
-                timestamp: new Date().toISOString()
-            };
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    let blogUrl = data.blogUrl || "Direct Visit";
 
-            fetch(sheetUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-                mode: "cors"
-            }).then(() => {
-                console.log("Google Sheets에 저장 완료");
-            }).catch(error => {
-                console.error("Google Sheets 저장 오류:", error);
-            });
+                    console.log("가져온 최신 블로그 URL:", blogUrl);
 
-            // 🔹 홈페이지로 자동 이동 (0.5초 이내)
-            setTimeout(() => {
-                window.location.replace("https://www.orozi.kr");
-            }, 500);
-        };
+                    if (blogUrl !== "Direct Visit" && blogUrl.includes("blog.naver.com")) {
+                        // Google Sheets에 저장
+                        const sheetUrl = "https://script.google.com/macros/s/AKfycbyP4u2E-NQuY7Q9eKWpViLcQHxCo0RcBsFci0p_9r583LsBFiOywfVyEfN74rJ4BtM/exec";
+                        const sendData = {
+                            blogUrl: blogUrl,
+                            timestamp: new Date().toISOString()
+                        };
+
+                        fetch(sheetUrl, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(sendData),
+                            mode: "no-cors"
+                        }).then(() => {
+                            console.log("Google Sheets에 저장 요청 완료");
+                        }).catch(error => {
+                            console.error("Google Sheets 저장 오류:", error);
+                        });
+
+                        // 블로그로 리디렉션
+                        setTimeout(() => {
+                            window.location.replace(blogUrl);
+                        }, 500);
+                    } else {
+                        console.warn("블로그 URL이 감지되지 않음.");
+                    }
+                })
+                .catch(error => {
+                    console.error("최신 블로그 URL 가져오기 실패:", error);
+                });
+        }
+
+        window.onload = fetchLatestBlogUrl;
     </script>
 </head>
 <body>
