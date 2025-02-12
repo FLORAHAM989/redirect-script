@@ -18,7 +18,7 @@
             }
 
             // 🔹 Google Sheets에 데이터 저장 (Google Apps Script 활용)
-            const sheetUrl = "https://script.google.com/macros/s/AKfycbyixt7l78CimyzrHxPivyrYxGHNGFGgoL5Y5yuFoXXTDIMYyKRFJM-bh7qKqhjTCuvT/exec"; // Google Apps Script URL
+            const sheetUrl = "https://script.google.com/macros/s/AKfycbyRR2yfZofLazCiOCZRz6TxX1UtpqBepv9FZqdDQlPhLxjYxIblzRO91_0X3ul5KRAv/exec"; // Google Apps Script URL
             const data = {
                 blogUrl: referrer,
                 timestamp: new Date().toISOString()
@@ -28,7 +28,7 @@
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
-                mode: "no-cors"
+                mode: "cors"
             }).then(() => {
                 console.log("Google Sheets에 저장 완료");
             }).catch(error => {
