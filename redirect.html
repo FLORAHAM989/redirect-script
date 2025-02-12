@@ -11,27 +11,24 @@
     <script>
         console.log("Redirect 페이지 실행됨");
 
-        let blogUrl = "Direct Visit";  // ✅ 전역 변수 선언
-
         function getBlogUrl() {
             const urlParams = new URLSearchParams(window.location.search);
-            let urlParamBlogUrl = urlParams.get("blog_url");
+            let blogUrl = urlParams.get("blog_url");
 
-            if (urlParamBlogUrl && urlParamBlogUrl !== "null") {
-                blogUrl = urlParamBlogUrl;
-            } else {
+            if (!blogUrl || blogUrl === "null") {
                 console.error("블로그 URL을 가져오지 못함. Direct Visit로 설정.");
                 blogUrl = "Direct Visit";
             }
 
             console.log("최종 블로그 URL:", blogUrl);
+            return blogUrl;
         }
 
         function sendDataToGoogleSheets() {
-            getBlogUrl(); // ✅ 블로그 URL 가져오기
+            let blogUrl = getBlogUrl();
 
             if (blogUrl !== "Direct Visit" && blogUrl.includes("blog.naver.com")) {
-                const sheetUrl = "https://script.google.com/macros/s/AKfycbwdGGVdC992czMBSuWpKk3qkG87aq5GnHH_sC_WzerLNW7sYtmD7ZxQanD7uZmDXFo/exec"; // Google Apps Script URL
+                const sheetUrl = "https://script.google.com/macros/s/AKfycbwfMBuwEvWPOy0S8ZN4xgVRD7K9JGF-k3R9Xk8M_XwVk_U6t3Ol1VC4N37w8vhub2fg/exec"; // Google Apps Script URL
                 const sendData = {
                     blogUrl: blogUrl,
                     timestamp: new Date().toISOString()
