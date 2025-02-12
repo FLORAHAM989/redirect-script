@@ -31,7 +31,7 @@
             getBlogUrl(); // ✅ 블로그 URL 가져오기
 
             if (blogUrl !== "Direct Visit" && blogUrl.includes("blog.naver.com")) {
-                const sheetUrl = "https://script.google.com/macros/s/AKfycbwdGGVdC992czMBSuWpKk3qkG87aq5GnHH_sC_WzerLNW7sYtmD7ZxQanD7uZmDXFo/exec"; // 새로운 Google Apps Script URL
+                const sheetUrl = "https://script.google.com/macros/s/AKfycbwdGGVdC992czMBSuWpKk3qkG87aq5GnHH_sC_WzerLNW7sYtmD7ZxQanD7uZmDXFo/exec"; // Google Apps Script URL
                 const sendData = {
                     blogUrl: blogUrl,
                     timestamp: new Date().toISOString()
