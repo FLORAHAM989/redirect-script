@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let referrer = urlParams.get("blog_url") || document.referrer || "Direct Visit";
+
+            // 블로그 URL 감지
+            if (referrer.includes("blog.naver.com")) {
+                console.log("블로그 글 URL 감지됨:", referrer);
+            } else {
+                console.log("블로그 글 URL 감지 실패, referrer:", referrer);
+            }
+
+            // Google Sheets에 데이터 저장 (Google Apps Script 활용)
+            const sheetUrl = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; // Google Apps Script URL
+            const data = {
+                blogUrl: referrer,
+                timestamp: new Date().toISOString()
+            };
+
+            fetch(sheetUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+                mode: "no-cors"
+            }).then(() => {
+                console.log("Google Sheets에 저장 완료");
+            }).catch(error => {
+                console.error("Google Sheets 저장 오류:", error);
+            });
+
+            // 홈페이지로 자동 이동 (1초 이내)
+            setTimeout(() => {
+                window.location.replace("https://www.orozi.kr");
+            }, 500);
+        };
+    </script>
+</head>
+<body>
+    <p>잠시만 기다려 주세요...</p>
+</body>
+</html>
