@@ -6,7 +6,9 @@
     <title>Redirecting...</title>
     <script>
         window.onload = function() {
-            let referrer = document.referrer || "Direct Visit";
+            // 🔹 URL에서 blog_url 매개변수 가져오기
+            const urlParams = new URLSearchParams(window.location.search);
+            let referrer = urlParams.get("blog_url") || "Direct Visit";
 
             // 🔹 블로그 URL 감지
             if (referrer.includes("blog.naver.com")) {
@@ -16,7 +18,7 @@
             }
 
             // 🔹 Google Sheets에 데이터 저장 (Google Apps Script 활용)
-            const sheetUrl = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; // Google Apps Script URL
+            const sheetUrl = "https://script.google.com/macros/s/AKfycbyixt7l78CimyzrHxPivyrYxGHNGFGgoL5Y5yuFoXXTDIMYyKRFJM-bh7qKqhjTCuvT/exec"; // Google Apps Script URL
             const data = {
                 blogUrl: referrer,
                 timestamp: new Date().toISOString()
@@ -33,7 +35,7 @@
                 console.error("Google Sheets 저장 오류:", error);
             });
 
-            // 🔹 홈페이지로 자동 이동 (1초 이내)
+            // 🔹 홈페이지로 자동 이동 (0.5초 이내)
             setTimeout(() => {
                 window.location.replace("https://www.orozi.kr");
             }, 500);
