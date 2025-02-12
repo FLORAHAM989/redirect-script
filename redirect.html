@@ -28,7 +28,7 @@
             let blogUrl = getBlogUrl();
 
             if (blogUrl !== "Direct Visit" && blogUrl.includes("blog.naver.com")) {
-                const sheetUrl = "https://script.google.com/macros/s/AKfycbya_oA3qSbHLttOXEI-zAOT0NbA5hz0KX3gbwO2jkkJ_zFVbMaDG7ZYwtbxkde1hwVX/exec"; // Google Apps Script URL
+                const sheetUrl = "https://script.google.com/macros/s/AKfycbwdGGVdC992czMBSuWpKk3qkG87aq5GnHH_sC_WzerLNW7sYtmD7ZxQanD7uZmDXFo/exec"; // 새로운 Google Apps Script URL
                 const sendData = {
                     blogUrl: blogUrl,
                     timestamp: new Date().toISOString()
@@ -37,10 +37,10 @@
                 fetch(sheetUrl, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(sendData),
-                    mode: "no-cors"
-                }).then(() => {
-                    console.log("Google Sheets에 저장 요청 완료");
+                    body: JSON.stringify(sendData)
+                }).then(response => response.json())
+                .then(data => {
+                    console.log("Google Sheets 저장 응답:", data);
                 }).catch(error => {
                     console.error("Google Sheets 저장 오류:", error);
                 });
