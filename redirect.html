@@ -7,14 +7,15 @@
     <script>
         console.log("Redirect 페이지 실행됨");
 
+        let blogUrl = "Direct Visit"; // 전역 변수 선언
+
         function fetchLatestBlogUrl() {
             const apiUrl = "https://script.google.com/macros/s/AKfycbyP4u2E-NQuY7Q9eKWpViLcQHxCo0RcBsFci0p_9r583LsBFiOywfVyEfN74rJ4BtM/exec"; // Google Apps Script URL
 
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
-                    let blogUrl = data.blogUrl || "Direct Visit";
-
+                    blogUrl = data.blogUrl || "Direct Visit"; // 전역 변수에 저장
                     console.log("가져온 최신 블로그 URL:", blogUrl);
 
                     if (blogUrl !== "Direct Visit" && blogUrl.includes("blog.naver.com")) {
