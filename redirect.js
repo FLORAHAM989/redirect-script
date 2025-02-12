@@ -1,5 +1,5 @@
 (function() {
-    // 🔹 URL에서 블로그 글 주소 가져오기 (위젯 클릭 시 자동 전달됨)
+    // 🔹 URL에서 블로그 글 주소 가져오기
     const urlParams = new URLSearchParams(window.location.search);
     let referrer = urlParams.get("blog_url") || document.referrer || "Direct Visit";
 
