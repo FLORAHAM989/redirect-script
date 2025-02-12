@@ -4,56 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redirecting...</title>
-    <script>
-        console.log("Redirect 페이지 실행됨");
-
-        let blogUrl = "Direct Visit"; // 전역 변수 선언
-
-        function fetchLatestBlogUrl() {
-            const apiUrl = "https://script.google.com/macros/s/AKfycbyP4u2E-NQuY7Q9eKWpViLcQHxCo0RcBsFci0p_9r583LsBFiOywfVyEfN74rJ4BtM/exec"; // Google Apps Script URL
-
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    blogUrl = data.blogUrl || "Direct Visit"; // 전역 변수에 저장
-                    console.log("가져온 최신 블로그 URL:", blogUrl);
-
-                    if (blogUrl !== "Direct Visit" && blogUrl.includes("blog.naver.com")) {
-                        // Google Sheets에 저장
-                        const sheetUrl = "https://script.google.com/macros/s/AKfycbyP4u2E-NQuY7Q9eKWpViLcQHxCo0RcBsFci0p_9r583LsBFiOywfVyEfN74rJ4BtM/exec";
-                        const sendData = {
-                            blogUrl: blogUrl,
-                            timestamp: new Date().toISOString()
-                        };
-
-                        fetch(sheetUrl, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(sendData),
-                            mode: "no-cors"
-                        }).then(() => {
-                            console.log("Google Sheets에 저장 요청 완료");
-                        }).catch(error => {
-                            console.error("Google Sheets 저장 오류:", error);
-                        });
-
-                        // 블로그로 리디렉션
-                        setTimeout(() => {
-                            window.location.replace(blogUrl);
-                        }, 500);
-                    } else {
-                        console.warn("블로그 URL이 감지되지 않음.");
-                    }
-                })
-                .catch(error => {
-                    console.error("최신 블로그 URL 가져오기 실패:", error);
-                });
-        }
-
-        window.onload = fetchLatestBlogUrl;
-    </script>
 </head>
 <body>
     <p>잠시만 기다려 주세요...</p>
+
+    <script>
+        console.log("Redirect 페이지 실행됨");
+
+        function getBlogUrl() {
+            // 1️⃣ URL 파라미터에서 `blog_url` 값 가져오기
+            const urlParams = new URLSearchParams(window.location.search);
+            let blogUrl = urlParams.get("blog_url");
+
+            // 2️⃣ URL 파라미터가 없으면 `document.referrer` 사용하여 블로그 URL 자동 감지
+            if (!blogUrl || blogUrl === "null") {
+                blogUrl = document.referrer;
+            }
+
+            // 3️⃣ 여전히 `blog_url`이 없으면 "Direct Visit" 처리
+            if (!blogUrl || blogUrl === "null") {
+                console.error("블로그 URL을 가져오지 못함. Direct Visit로 설정.");
+                blogUrl = "Direct Visit";
+            }
+
+            console.log("최종 블로그 URL:", blogUrl);
+            return blogUrl;
+        }
+
+        function sendDataToGoogleSheets() {
+            let blogUrl = getBlogUrl();
+
+            if (blogUrl !== "Direct Visit" && blogUrl.includes("blog.naver.com")) {
+                const sheetUrl = "https://script.google.com/macros/s/AKfycbyP4u2E-NQuY7Q9eKWpViLcQHxCo0RcBsFci0p_9r583LsBFiOywfVyEfN74rJ4BtM/exec";
+                const sendData = {
+                    blogUrl: blogUrl,
+                    timestamp: new Date().toISOString()
+                };
+
+                fetch(sheetUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(sendData),
+                    mode: "no-cors"
+                }).then(() => {
+                    console.log("Google Sheets에 저장 요청 완료");
+                }).catch(error => {
+                    console.error("Google Sheets 저장 오류:", error);
+                });
+
+                // 1초 후 홈페이지 이동
+                setTimeout(() => {
+                    window.location.replace("https://www.orozi.kr");
+                }, 500);
+            } else {
+                console.warn("블로그 URL이 감지되지 않음.");
+            }
+        }
+
+        window.onload = sendDataToGoogleSheets;
+    </script>
 </body>
 </html>
